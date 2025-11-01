@@ -1,0 +1,14 @@
+# Core dependencies
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.0
+python-dotenv==1.0.1
+
+# Microsoft Agent Framework
+agent-framework==0.1.0
+
+# Azure (if using Azure provider)
+azure-identity==1.19.0
+
+# OpenAI (if using OpenAI provider)
+openai==1.54.3

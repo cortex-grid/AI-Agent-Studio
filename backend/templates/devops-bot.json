@@ -1,0 +1,115 @@
+{
+  "id": "template-devops-bot",
+  "name": "DevOps Assistant",
+  "description": "Automated code analysis and execution bot with code interpreter",
+  "graph": {
+    "nodes": [
+      {
+        "id": "manager-1",
+        "type": "agent",
+        "kind": "teamManager",
+        "position": { "x": 250, "y": 50 },
+        "data": {
+          "label": "DevOps Coordinator",
+          "provider": "openai",
+          "model": "gpt-4o",
+          "system": "You coordinate code analysis, testing, and deployment tasks. Break down complex DevOps requests into executable steps.",
+          "strategy": "sequential",
+          "threadPolicy": "singleTeamThread",
+          "description": "Orchestrates DevOps workflow"
+        }
+      },
+      {
+        "id": "agent-1",
+        "type": "agent",
+        "kind": "agent",
+        "position": { "x": 100, "y": 200 },
+        "data": {
+          "label": "Code Analyzer",
+          "provider": "openai",
+          "model": "gpt-4o",
+          "system": "You analyze code for quality, security issues, and best practices. Use code interpreter to run static analysis and tests.",
+          "subtype": "chat-agent",
+          "description": "Analyzes code quality and security"
+        }
+      },
+      {
+        "id": "agent-2",
+        "type": "agent",
+        "kind": "agent",
+        "position": { "x": 400, "y": 200 },
+        "data": {
+          "label": "Script Generator",
+          "provider": "openai",
+          "model": "gpt-4o",
+          "system": "You generate deployment scripts, CI/CD configurations, and automation code. Execute and test scripts using code interpreter.",
+          "subtype": "chat-agent",
+          "description": "Generates and tests deployment scripts"
+        }
+      },
+      {
+        "id": "tool-1",
+        "type": "tool",
+        "kind": "tool",
+        "position": { "x": 100, "y": 350 },
+        "data": {
+          "label": "Code Interpreter",
+          "subtype": "code-interpreter",
+          "toolConfig": {},
+          "description": "Azure AI hosted Python code execution"
+        }
+      },
+      {
+        "id": "tool-2",
+        "type": "tool",
+        "kind": "tool",
+        "position": { "x": 250, "y": 350 },
+        "data": {
+          "label": "File Search",
+          "subtype": "file-search",
+          "toolConfig": {
+            "vectorStoreId": "vs_docs_id_here"
+          },
+          "description": "Search deployment documentation"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "source": "manager-1",
+        "target": "agent-1"
+      },
+      {
+        "id": "e2",
+        "source": "manager-1",
+        "target": "agent-2"
+      },
+      {
+        "id": "e3",
+        "source": "agent-1",
+        "target": "tool-1"
+      },
+      {
+        "id": "e4",
+        "source": "agent-2",
+        "target": "tool-1"
+      },
+      {
+        "id": "e5",
+        "source": "agent-2",
+        "target": "tool-2"
+      }
+    ]
+  },
+  "settings": {
+    "defaultProvider": "openai",
+    "defaultModel": "gpt-4o"
+  },
+  "metadata": {
+    "template": true,
+    "category": "DevOps",
+    "tags": ["code-analysis", "deployment", "automation", "ci-cd"],
+    "setupInstructions": "1. Configure OpenAI or Azure credentials\n2. (Optional) Upload deployment docs to vector store\n3. Test with code analysis requests\n4. Example: 'Analyze this Python script for security issues'"
+  }
+}

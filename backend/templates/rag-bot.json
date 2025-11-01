@@ -1,0 +1,93 @@
+{
+  "id": "template-rag-bot",
+  "name": "RAG Document Assistant",
+  "description": "Retrieval-Augmented Generation bot with file search capabilities",
+  "graph": {
+    "nodes": [
+      {
+        "id": "manager-1",
+        "type": "agent",
+        "kind": "teamManager",
+        "position": { "x": 250, "y": 50 },
+        "data": {
+          "label": "RAG Coordinator",
+          "provider": "openai",
+          "model": "gpt-4o-mini",
+          "system": "You coordinate document search and response generation. First search for relevant information, then synthesize a comprehensive answer.",
+          "strategy": "sequential",
+          "threadPolicy": "singleTeamThread",
+          "description": "Coordinates document retrieval and answer generation"
+        }
+      },
+      {
+        "id": "agent-1",
+        "type": "agent",
+        "kind": "agent",
+        "position": { "x": 100, "y": 200 },
+        "data": {
+          "label": "Document Searcher",
+          "provider": "openai",
+          "model": "gpt-4o-mini",
+          "system": "You are an expert at searching and retrieving relevant information from documents. Use the file search tool to find pertinent information based on user queries.",
+          "subtype": "chat-agent",
+          "description": "Searches document database for relevant context"
+        }
+      },
+      {
+        "id": "agent-2",
+        "type": "agent",
+        "kind": "agent",
+        "position": { "x": 400, "y": 200 },
+        "data": {
+          "label": "Answer Generator",
+          "provider": "openai",
+          "model": "gpt-4o",
+          "system": "You synthesize information from document search results into clear, comprehensive answers. Cite sources when possible.",
+          "subtype": "chat-agent",
+          "description": "Generates answers based on retrieved context"
+        }
+      },
+      {
+        "id": "tool-1",
+        "type": "tool",
+        "kind": "tool",
+        "position": { "x": 100, "y": 350 },
+        "data": {
+          "label": "File Search",
+          "subtype": "file-search",
+          "toolConfig": {
+            "vectorStoreId": "vs_your_id_here"
+          },
+          "description": "Azure AI hosted file search"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "source": "manager-1",
+        "target": "agent-1"
+      },
+      {
+        "id": "e2",
+        "source": "manager-1",
+        "target": "agent-2"
+      },
+      {
+        "id": "e3",
+        "source": "agent-1",
+        "target": "tool-1"
+      }
+    ]
+  },
+  "settings": {
+    "defaultProvider": "openai",
+    "defaultModel": "gpt-4o-mini"
+  },
+  "metadata": {
+    "template": true,
+    "category": "RAG",
+    "tags": ["document-search", "retrieval", "knowledge-base"],
+    "setupInstructions": "1. Upload documents to Azure AI vector store\n2. Update vectorStoreId in File Search tool config\n3. Configure OpenAI or Azure credentials\n4. Test with document-related queries"
+  }
+}

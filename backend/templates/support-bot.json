@@ -1,0 +1,131 @@
+{
+  "id": "template-support-bot",
+  "name": "Customer Support Assistant",
+  "description": "Multi-channel support bot with web search and knowledge base",
+  "graph": {
+    "nodes": [
+      {
+        "id": "manager-1",
+        "type": "agent",
+        "kind": "teamManager",
+        "position": { "x": 250, "y": 50 },
+        "data": {
+          "label": "Support Coordinator",
+          "provider": "openai",
+          "model": "gpt-4o-mini",
+          "system": "You coordinate customer support responses. First check the knowledge base, then search the web if needed, and finally generate a helpful response.",
+          "strategy": "sequential",
+          "threadPolicy": "singleTeamThread",
+          "description": "Routes and coordinates support queries"
+        }
+      },
+      {
+        "id": "agent-1",
+        "type": "agent",
+        "kind": "agent",
+        "position": { "x": 50, "y": 200 },
+        "data": {
+          "label": "KB Searcher",
+          "provider": "openai",
+          "model": "gpt-4o-mini",
+          "system": "You search the internal knowledge base for answers to customer questions. Use file search to find relevant documentation.",
+          "subtype": "chat-agent",
+          "description": "Searches internal knowledge base"
+        }
+      },
+      {
+        "id": "agent-2",
+        "type": "agent",
+        "kind": "agent",
+        "position": { "x": 250, "y": 200 },
+        "data": {
+          "label": "Web Researcher",
+          "provider": "openai",
+          "model": "gpt-4o-mini",
+          "system": "You search the web for up-to-date information when knowledge base doesn't have the answer. Focus on official sources and recent updates.",
+          "subtype": "chat-agent",
+          "description": "Searches web for current information"
+        }
+      },
+      {
+        "id": "agent-3",
+        "type": "agent",
+        "kind": "agent",
+        "position": { "x": 450, "y": 200 },
+        "data": {
+          "label": "Response Generator",
+          "provider": "openai",
+          "model": "gpt-4o",
+          "system": "You craft professional, empathetic customer support responses. Summarize findings from research and provide clear, actionable guidance.",
+          "subtype": "chat-agent",
+          "description": "Generates customer-facing responses"
+        }
+      },
+      {
+        "id": "tool-1",
+        "type": "tool",
+        "kind": "tool",
+        "position": { "x": 50, "y": 350 },
+        "data": {
+          "label": "File Search",
+          "subtype": "file-search",
+          "toolConfig": {
+            "vectorStoreId": "vs_kb_id_here"
+          },
+          "description": "Internal knowledge base search"
+        }
+      },
+      {
+        "id": "tool-2",
+        "type": "tool",
+        "kind": "tool",
+        "position": { "x": 250, "y": 350 },
+        "data": {
+          "label": "Web Search",
+          "subtype": "google-search",
+          "toolConfig": {
+            "requiresApiKey": true
+          },
+          "description": "Google web search"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "source": "manager-1",
+        "target": "agent-1"
+      },
+      {
+        "id": "e2",
+        "source": "manager-1",
+        "target": "agent-2"
+      },
+      {
+        "id": "e3",
+        "source": "manager-1",
+        "target": "agent-3"
+      },
+      {
+        "id": "e4",
+        "source": "agent-1",
+        "target": "tool-1"
+      },
+      {
+        "id": "e5",
+        "source": "agent-2",
+        "target": "tool-2"
+      }
+    ]
+  },
+  "settings": {
+    "defaultProvider": "openai",
+    "defaultModel": "gpt-4o-mini"
+  },
+  "metadata": {
+    "template": true,
+    "category": "Support",
+    "tags": ["customer-support", "knowledge-base", "web-search", "helpdesk"],
+    "setupInstructions": "1. Upload support docs to Azure AI vector store\n2. Update vectorStoreId in File Search tool\n3. Set GOOGLE_SEARCH_API_KEY environment variable\n4. Configure OpenAI or Azure credentials\n5. Test with customer support queries"
+  }
+}

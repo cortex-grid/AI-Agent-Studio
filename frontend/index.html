@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MAF Agent Studio - Visual AI Agent Builder</title>
+    <meta name="description" content="Design, run, and export Python AI agents built on Microsoft Agent Framework with a beautiful visual canvas and chat interface" />
+    <meta name="author" content="MAF Studio" />
+
+    <meta property="og:title" content="MAF Agent Studio" />
+    <meta property="og:description" content="Visual platform for building multi-agent AI systems with Microsoft Agent Framework" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:image" content="" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <!-- Set initial theme (light/dark) as early as possible to avoid flash -->
+    <script>
+      (function() {
+        try {
+            var theme = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var useDark = theme === 'dark' || (!theme && prefersDark);
+            if (useDark) {
+              document.documentElement.classList.add('dark');
+              document.documentElement.setAttribute('data-theme', 'dark');
+              try { document.body.classList.add('dark'); document.body.setAttribute('data-theme','dark'); } catch(e) { }
+            } else {
+              document.documentElement.classList.remove('dark');
+              document.documentElement.setAttribute('data-theme', 'light');
+              try { document.body.classList.remove('dark'); document.body.setAttribute('data-theme','light'); } catch(e) { }
+            }
+          } catch (e) {
+            // ignore
+          }
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
