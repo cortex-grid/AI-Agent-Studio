@@ -6,6 +6,9 @@ import os
 import json
 from typing import Dict, Any, List, Optional
 from agent_framework.openai import OpenAIChatClient
+from agent_framework.azure import AzureAIAgentClient
+from azure.identity.aio import AzureCliCredential
+from app.config import config
 
 
 class CanvasGenerator:
@@ -18,16 +21,22 @@ class CanvasGenerator:
         self._node_positions = {}  # Track positions for auto-layout
     
     async def initialize(self):
-        """Initialize the MAF OpenAI client and create the generation agent."""
-        # Use OpenAI client - model is passed to create_agent, not __init__
-        # Determine model id: prefer OPENAI_CHAT_MODEL_ID, fall back to OPENAI_MODEL or default
-        model_id = os.getenv("OPENAI_CHAT_MODEL_ID") or os.getenv("OPENAI_MODEL") or "gpt-4o-mini"
+        """Initialize the MAF client and create the generation agent."""
+        provider = config.PROVIDER
+        model_id = os.getenv("OPENAI_CHAT_MODEL_ID") or os.getenv("OPENAI_MODEL") or config.OPENAI_MODEL
 
-        # Initialize client with explicit model_id (some client implementations require it)
-        self.client = OpenAIChatClient(
-            api_key=os.getenv("OPENAI_API_KEY"),
-            model_id=model_id,
-        )
+        # Initialize client based on provider
+        if provider == "azure":
+            self.client = AzureAIAgentClient(
+                credential=AzureCliCredential(),
+                endpoint=config.AZURE_AI_PROJECT_ENDPOINT,
+                model_deployment_name=os.getenv("AZURE_OPENAI_DEPLOYMENT") or model_id,
+            )
+        else:
+            self.client = OpenAIChatClient(
+                api_key=config.OPENAI_API_KEY,
+                model_id=model_id,
+            )
 
         # Define tools for node generation
         tools = [

@@ -2,16 +2,21 @@
 FastAPI backend for Agent Canvas.
 Provides export and chat endpoints powered by Microsoft Agent Framework.
 """
+import os
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
+# Load environment variables FIRST, before any other imports that read them
+backend_dir = Path(__file__).parent.parent
+env_path = backend_dir / ".env"
+load_dotenv(dotenv_path=env_path, override=True)
+
+# NOW import config and routers (after .env is loaded)
 from .routers import export, chat, templates, generate, tools, playbooks, evaluations
 from .config import config
 from .middleware.token_logger import TokenCostMiddleware, get_token_logger
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Validate configuration on startup
 try:
